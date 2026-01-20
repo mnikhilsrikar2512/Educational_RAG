@@ -1,0 +1,8 @@
+cat <<EOF > .gitignore
+rag/
+__pycache__/
+vector_db/
+.DS_Store
+*.pyc
+.env
+EOF
