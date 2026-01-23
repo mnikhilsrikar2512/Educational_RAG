@@ -1,7 +1,8 @@
 import streamlit as st
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_ollama import ChatOllama
+from transformers import pipeline
+from langchain_community.llms import HuggingFacePipeline
 
 DB_PATH = "vector_db"
 
@@ -12,7 +13,14 @@ embeddings = HuggingFaceEmbeddings(
 db = FAISS.load_local(DB_PATH, embeddings, allow_dangerous_deserialization=True)
 retriever = db.as_retriever(search_kwargs={"k": 3})
 
-llm = ChatOllama(model="phi3:mini", temperature=0.2)
+pipe = pipeline(
+    "text-generation",
+    model="microsoft/phi-2",
+    max_new_tokens=300,
+    temperature=0.2,
+)
+
+llm = HuggingFacePipeline(pipeline=pipe)
 
 SYSTEM_PROMPT = """
 You are an educational assistant. Answer strictly from the provided context.
